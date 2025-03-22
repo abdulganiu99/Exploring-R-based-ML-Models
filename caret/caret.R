@@ -46,10 +46,30 @@ modelTuned <- train(Species ~ ., data = trainData,
                     tuneGrid = tuneGrid)
 print(modelTuned)
 
-#EVALUATING THE MODELS PERFORMANCE
+#EVALUATING THE MODELS PERFORMANCE ON TEST DATA
 predictions <- predict(modelTuned, newdata = testData)
 confMatrix <- confusionMatrix(predictions, testData$Species)
 print(confMatrix)
+
+
+library(ggplot2)
+library(reshape2)
+# Manually input confusion matrix values
+conf_matrix_df <- data.frame(
+  Actual = rep(c("Setosa", "Versicolor", "Virginica"), each = 3),
+  Predicted = rep(c("Setosa", "Versicolor", "Virginica"), times = 3),
+  Count = c(10, 0, 0, 0, 10, 2, 0, 0, 8)  # Fill in actual confusion matrix values
+)
+
+# Convert to matrix format
+conf_matrix_melted <- melt(conf_matrix_df)
+ggplot(conf_matrix_df, aes(x = Predicted, y = Actual, fill = Count)) +
+  geom_tile(color = "black") +
+  scale_fill_gradient(low = "white", high = "blue") +
+  geom_text(aes(label = Count), color = "black", size = 5) +
+  labs(title = "Confusion Matrix Heatmap", x = "Predicted Label", y = "Actual Label") +
+  theme_minimal()
+
 
 
 
